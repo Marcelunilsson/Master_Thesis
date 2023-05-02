@@ -1,0 +1,2 @@
+model,n_folds,mae,mse,rmse,r2,r,elapsed_time,n_samples,n_features,transformer,scale,X_pca,scaled_data
+random_forest,5,5.405328392398286,45.53740335068067,6.742054871745616,0.2229887278643985,0.4841413759540368,96.08406710624695,948,4,bert-base-uncased,swls,no,no

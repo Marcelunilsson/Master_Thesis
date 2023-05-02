@@ -1,0 +1,3492 @@
+import os
+import random
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import plotly.graph_objects as go
+from PIL import Image
+from wordcloud import WordCloud
+
+
+def Q_group(server_image_path,
+            construct_text,
+            survey_id,
+            group_name,
+            group_id,
+            Q_id):
+    q_1 = (
+        "<p>\n"
+        '<font size="+3">People was asked to describe their '
+        f'<strong> {construct_text} </strong>'
+        "with ten words at two instances, with some time in between the two.\n"
+        "</br>\n"
+        "The words used by one person is shown in the "
+        'pictures below, where the left picture'
+        " shows the words from the first query and the right "
+        'image from the second query.</font></p>\n'
+        "</br>\n"
+        f'<img src="{server_image_path}" alt="">\n'
+        '</br>\n</br>\n<p>\n<strong>\n<font size="+2">\n'
+        'Please rate if this change was  <i><font size="+3">positive,'
+        ' neutral</font></i> or <i><font size="+3">negative </font></i>.\n'
+        "</font>\n</strong>\n</br>\n</p>\n"
+    )
+    q_2 = (
+        '<p>\n<font size="+2">\n<strong>\n'
+        'Please rate how <i><font size="+3">Noticeable</font></i>'
+        'the change is from the first to the second query.\n'
+        '</br>\n(From left picture to right)\n'
+        '</strong>\n</font>\n</br>\n</p>\n'
+    )
+    q_3 = (
+        '<p>\n<font size="+2">\n<strong>\n'
+        'Please rate how <i><font size="+3">Meaningful</font></i>'
+        ' you feel the change is from the first to the second query.\n'
+        '</br>\n(From left picture to right)\n'
+        '</strong>\n</font>\n</br>\n</p>'
+    )
+    Q = f"""<?xml version="1.0" encoding="UTF-8"?>
+    <document>
+    <LimeSurveyDocType>Group</LimeSurveyDocType>
+    <DBVersion>491</DBVersion>
+    <languages>
+    <language>en</language>
+    </languages>
+    <groups>
+    <fields>
+    <fieldname>gid</fieldname>
+    <fieldname>sid</fieldname>
+    <fieldname>group_order</fieldname>
+    <fieldname>randomization_group</fieldname>
+    <fieldname>grelevance</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <gid><![CDATA[{group_id}]]></gid>
+        <sid><![CDATA[{survey_id}]]></sid>
+        <group_order><![CDATA[1]]></group_order>
+        <randomization_group/>
+        <grelevance/>
+    </row>
+    </rows>
+    </groups>
+    <group_l10ns>
+    <fields>
+    <fieldname>id</fieldname>
+    <fieldname>gid</fieldname>
+    <fieldname>group_name</fieldname>
+    <fieldname>description</fieldname>
+    <fieldname>language</fieldname>
+    <fieldname>sid</fieldname>
+    <fieldname>group_order</fieldname>
+    <fieldname>randomization_group</fieldname>
+    <fieldname>grelevance</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <id><![CDATA[1585]]></id>
+        <gid><![CDATA[{group_id}]]></gid>
+        <group_name><![CDATA[{group_name}]]></group_name>
+        <description/>
+        <language><![CDATA[en]]></language>
+        <sid><![CDATA[{survey_id}]]></sid>
+        <group_order><![CDATA[1]]></group_order>
+        <randomization_group/>
+        <grelevance/>
+    </row>
+    </rows>
+    </group_l10ns>
+    <questions>
+    <fields>
+    <fieldname>qid</fieldname>
+    <fieldname>parent_qid</fieldname>
+    <fieldname>sid</fieldname>
+    <fieldname>gid</fieldname>
+    <fieldname>type</fieldname>
+    <fieldname>title</fieldname>
+    <fieldname>preg</fieldname>
+    <fieldname>other</fieldname>
+    <fieldname>mandatory</fieldname>
+    <fieldname>encrypted</fieldname>
+    <fieldname>question_order</fieldname>
+    <fieldname>scale_id</fieldname>
+    <fieldname>same_default</fieldname>
+    <fieldname>relevance</fieldname>
+    <fieldname>modulename</fieldname>
+    <fieldname>question_theme_name</fieldname>
+    <fieldname>same_script</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <parent_qid><![CDATA[0]]></parent_qid>
+        <sid><![CDATA[{survey_id}]]></sid>
+        <gid><![CDATA[{group_id}]]></gid>
+        <type><![CDATA[L]]></type>
+        <title><![CDATA[G01Q01]]></title>
+        <other><![CDATA[N]]></other>
+        <mandatory><![CDATA[Y]]></mandatory>
+        <encrypted><![CDATA[N]]></encrypted>
+        <question_order><![CDATA[1]]></question_order>
+        <scale_id><![CDATA[0]]></scale_id>
+        <same_default><![CDATA[0]]></same_default>
+        <relevance><![CDATA[1]]></relevance>
+        <modulename/>
+        <question_theme_name><![CDATA[bootstrap_buttons]]></question_theme_name>
+        <same_script><![CDATA[0]]></same_script>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <parent_qid><![CDATA[0]]></parent_qid>
+        <sid><![CDATA[{survey_id}]]></sid>
+        <gid><![CDATA[{group_id}]]></gid>
+        <type><![CDATA[L]]></type>
+        <title><![CDATA[G01Q02]]></title>
+        <other><![CDATA[N]]></other>
+        <mandatory><![CDATA[Y]]></mandatory>
+        <encrypted><![CDATA[N]]></encrypted>
+        <question_order><![CDATA[2]]></question_order>
+        <scale_id><![CDATA[0]]></scale_id>
+        <same_default><![CDATA[0]]></same_default>
+        <relevance><![CDATA[1]]></relevance>
+        <modulename/>
+        <question_theme_name><![CDATA[bootstrap_buttons]]></question_theme_name>
+        <same_script><![CDATA[0]]></same_script>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <parent_qid><![CDATA[0]]></parent_qid>
+        <sid><![CDATA[{survey_id}]]></sid>
+        <gid><![CDATA[{group_id}]]></gid>
+        <type><![CDATA[L]]></type>
+        <title><![CDATA[G01Q30]]></title>
+        <other><![CDATA[N]]></other>
+        <mandatory><![CDATA[Y]]></mandatory>
+        <encrypted><![CDATA[N]]></encrypted>
+        <question_order><![CDATA[3]]></question_order>
+        <scale_id><![CDATA[0]]></scale_id>
+        <same_default><![CDATA[0]]></same_default>
+        <relevance><![CDATA[1]]></relevance>
+        <modulename/>
+        <question_theme_name><![CDATA[bootstrap_buttons]]></question_theme_name>
+        <same_script><![CDATA[0]]></same_script>
+    </row>
+    </rows>
+    </questions>
+    <question_l10ns>
+    <fields>
+    <fieldname>id</fieldname>
+    <fieldname>qid</fieldname>
+    <fieldname>question</fieldname>
+    <fieldname>help</fieldname>
+    <fieldname>script</fieldname>
+    <fieldname>language</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <id><![CDATA[40684]]></id>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <question><![CDATA[{q_1}]]></question>
+        <help/>
+        <script/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[40687]]></id>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <question><![CDATA[{q_2}]]></question>
+        <help/>
+        <script/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[42868]]></id>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <question><![CDATA[{q_3}]]></question>
+        <help/>
+        <script/>
+        <language><![CDATA[en]]></language>
+    </row>
+    </rows>
+    </question_l10ns>
+    <answers>
+    <fields>
+    <fieldname>aid</fieldname>
+    <fieldname>qid</fieldname>
+    <fieldname>code</fieldname>
+    <fieldname>sortorder</fieldname>
+    <fieldname>assessment_value</fieldname>
+    <fieldname>scale_id</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <aid><![CDATA[30224]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO01]]></code>
+        <sortorder><![CDATA[0]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30225]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO02]]></code>
+        <sortorder><![CDATA[1]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30226]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO03]]></code>
+        <sortorder><![CDATA[2]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30227]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO04]]></code>
+        <sortorder><![CDATA[3]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30228]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO05]]></code>
+        <sortorder><![CDATA[4]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30229]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO06]]></code>
+        <sortorder><![CDATA[5]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30230]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO07]]></code>
+        <sortorder><![CDATA[6]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30231]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO08]]></code>
+        <sortorder><![CDATA[7]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30232]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO09]]></code>
+        <sortorder><![CDATA[8]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30233]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO10]]></code>
+        <sortorder><![CDATA[9]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30234]]></aid>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <code><![CDATA[AO11]]></code>
+        <sortorder><![CDATA[10]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30260]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO02]]></code>
+        <sortorder><![CDATA[0]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30261]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO03]]></code>
+        <sortorder><![CDATA[1]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30262]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO04]]></code>
+        <sortorder><![CDATA[2]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30263]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO05]]></code>
+        <sortorder><![CDATA[3]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30264]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO06]]></code>
+        <sortorder><![CDATA[4]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30265]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO07]]></code>
+        <sortorder><![CDATA[5]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30266]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO08]]></code>
+        <sortorder><![CDATA[6]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30267]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO09]]></code>
+        <sortorder><![CDATA[7]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30268]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO10]]></code>
+        <sortorder><![CDATA[8]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30269]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO11]]></code>
+        <sortorder><![CDATA[9]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30270]]></aid>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <code><![CDATA[AO12]]></code>
+        <sortorder><![CDATA[10]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30235]]></aid>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <code><![CDATA[AO01]]></code>
+        <sortorder><![CDATA[0]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30236]]></aid>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <code><![CDATA[AO02]]></code>
+        <sortorder><![CDATA[1]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    <row>
+        <aid><![CDATA[30237]]></aid>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <code><![CDATA[AO03]]></code>
+        <sortorder><![CDATA[2]]></sortorder>
+        <assessment_value><![CDATA[0]]></assessment_value>
+        <scale_id><![CDATA[0]]></scale_id>
+    </row>
+    </rows>
+    </answers>
+    <answer_l10ns>
+    <fields>
+    <fieldname>id</fieldname>
+    <fieldname>aid</fieldname>
+    <fieldname>answer</fieldname>
+    <fieldname>language</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <id><![CDATA[36187]]></id>
+        <aid><![CDATA[30267]]></aid>
+        <answer><![CDATA[7]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36186]]></id>
+        <aid><![CDATA[30266]]></aid>
+        <answer><![CDATA[6]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36157]]></id>
+        <aid><![CDATA[30237]]></aid>
+        <answer><![CDATA[Negative]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36188]]></id>
+        <aid><![CDATA[30268]]></aid>
+        <answer><![CDATA[8]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36189]]></id>
+        <aid><![CDATA[30269]]></aid>
+        <answer><![CDATA[9]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36144]]></id>
+        <aid><![CDATA[30224]]></aid>
+        <answer><![CDATA[0]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36145]]></id>
+        <aid><![CDATA[30225]]></aid>
+        <answer><![CDATA[1]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36146]]></id>
+        <aid><![CDATA[30226]]></aid>
+        <answer><![CDATA[2]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36147]]></id>
+        <aid><![CDATA[30227]]></aid>
+        <answer><![CDATA[3]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36148]]></id>
+        <aid><![CDATA[30228]]></aid>
+        <answer><![CDATA[4]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36149]]></id>
+        <aid><![CDATA[30229]]></aid>
+        <answer><![CDATA[5]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36150]]></id>
+        <aid><![CDATA[30230]]></aid>
+        <answer><![CDATA[6]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36152]]></id>
+        <aid><![CDATA[30232]]></aid>
+        <answer><![CDATA[8]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36156]]></id>
+        <aid><![CDATA[30236]]></aid>
+        <answer><![CDATA[Neutral]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36151]]></id>
+        <aid><![CDATA[30231]]></aid>
+        <answer><![CDATA[7]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36155]]></id>
+        <aid><![CDATA[30235]]></aid>
+        <answer><![CDATA[Positive]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36154]]></id>
+        <aid><![CDATA[30234]]></aid>
+        <answer><![CDATA[10]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36153]]></id>
+        <aid><![CDATA[30233]]></aid>
+        <answer><![CDATA[9]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36185]]></id>
+        <aid><![CDATA[30265]]></aid>
+        <answer><![CDATA[5]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36190]]></id>
+        <aid><![CDATA[30270]]></aid>
+        <answer><![CDATA[10]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36184]]></id>
+        <aid><![CDATA[30264]]></aid>
+        <answer><![CDATA[4]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36183]]></id>
+        <aid><![CDATA[30263]]></aid>
+        <answer><![CDATA[3]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36182]]></id>
+        <aid><![CDATA[30262]]></aid>
+        <answer><![CDATA[2]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36181]]></id>
+        <aid><![CDATA[30261]]></aid>
+        <answer><![CDATA[1]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <id><![CDATA[36180]]></id>
+        <aid><![CDATA[30260]]></aid>
+        <answer><![CDATA[0]]></answer>
+        <language><![CDATA[en]]></language>
+    </row>
+    </rows>
+    </answer_l10ns>
+    <question_attributes>
+    <fields>
+    <fieldname>qid</fieldname>
+    <fieldname>attribute</fieldname>
+    <fieldname>value</fieldname>
+    <fieldname>language</fieldname>
+    </fields>
+    <rows>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[alphasort]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[array_filter]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[array_filter_exclude]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[array_filter_style]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[button_size]]></attribute>
+        <value><![CDATA[default]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[crop_or_resize]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[cssclass]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[em_validation_q]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[em_validation_q_tip]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[fix_height]]></attribute>
+        <value><![CDATA[200]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[fix_width]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[hidden]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[hide_tip]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[horizontal_scroll]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[keep_aspect]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[other_comment_mandatory]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[other_numbers_only]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[other_position]]></attribute>
+        <value><![CDATA[default]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[other_position_code]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[other_replace_text]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[page_break]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[printable_help]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[public_statistics]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[random_group]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[random_order]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[save_as_default]]></attribute>
+        <value><![CDATA[N]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[scale_export]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[statistics_graphtype]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[statistics_showgraph]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_action]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_countdown_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_disable_next]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_disable_prev]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_message_delay]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_message_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_timer_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_display_time]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_display_time]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id}]]></qid>
+        <attribute><![CDATA[time_limit_warning_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[alphasort]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[array_filter]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[array_filter_exclude]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[array_filter_style]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[button_size]]></attribute>
+        <value><![CDATA[default]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[crop_or_resize]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[cssclass]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[em_validation_q]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[em_validation_q_tip]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[fix_height]]></attribute>
+        <value><![CDATA[200]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[fix_width]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[hidden]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[hide_tip]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[horizontal_scroll]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[keep_aspect]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[other_comment_mandatory]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[other_numbers_only]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[other_position]]></attribute>
+        <value><![CDATA[default]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[other_position_code]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[other_replace_text]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[page_break]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[printable_help]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[public_statistics]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[random_group]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[random_order]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[save_as_default]]></attribute>
+        <value><![CDATA[N]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[scale_export]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[statistics_graphtype]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[statistics_showgraph]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_action]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_countdown_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_disable_next]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_disable_prev]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_message_delay]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_message_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_timer_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_display_time]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_display_time]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+1}]]></qid>
+        <attribute><![CDATA[time_limit_warning_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[alphasort]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[array_filter]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[array_filter_exclude]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[array_filter_style]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[button_size]]></attribute>
+        <value><![CDATA[default]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[crop_or_resize]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[cssclass]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[em_validation_q]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[em_validation_q_tip]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[fix_height]]></attribute>
+        <value><![CDATA[200]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[fix_width]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[hidden]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[hide_tip]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[horizontal_scroll]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[keep_aspect]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[other_comment_mandatory]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[other_numbers_only]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[other_position]]></attribute>
+        <value><![CDATA[default]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[other_position_code]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[other_replace_text]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[page_break]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[printable_help]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[public_statistics]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[random_group]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[random_order]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[save_as_default]]></attribute>
+        <value><![CDATA[N]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[scale_export]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[statistics_graphtype]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[statistics_showgraph]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_action]]></attribute>
+        <value><![CDATA[1]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_countdown_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_disable_next]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_disable_prev]]></attribute>
+        <value><![CDATA[0]]></value>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_message_delay]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_message_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_timer_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_display_time]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_2_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_display_time]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_message]]></attribute>
+        <value/>
+        <language><![CDATA[en]]></language>
+    </row>
+    <row>
+        <qid><![CDATA[{Q_id+2}]]></qid>
+        <attribute><![CDATA[time_limit_warning_style]]></attribute>
+        <value/>
+        <language/>
+    </row>
+    </rows>
+    </question_attributes>
+    </document>
+    """
+    return Q
+
+
+def save_Q_group(save_path,
+                 server_image_path,
+                 construct_text,
+                 survey_id,
+                 group_name,
+                 group_id,
+                 Q_id):
+    with open(save_path, "w") as f:
+        f.write(
+            Q_group(
+                server_image_path,
+                construct_text,
+                survey_id,
+                group_name,
+                group_id,
+                Q_id)
+            )
+
+
+def questionaire(n, construct, color='black', collage_color=True):
+    """For one construct, generates n*2 wordclouds with random deltas between,
+    also generates a .txt with all the words for the word clouds
+    saved and marked.
+    saves the result in a unique folder under _graphs
+
+    Args:
+        n (int): Number of wordcloud pairs to generate
+        construct (str): What construct to use ['hils', 'swls']
+    """
+    df = pd.read_feather(f'_data/{construct}_delta_dataset.feather')
+    samp = df.sample(n)
+    path = f'_graphs/{construct}_{str(sum(samp.index))}'
+    os.mkdir(path)
+    os.mkdir(f'{path}/collage')
+    os.mkdir(f'{path}/q_groups')
+    samp.to_csv(
+        f'{path}/{construct}_{n}_sample.csv',
+        index=False)
+    s_i = 1
+    collage_path_list = []
+    for i, row in samp.iterrows():
+        val_1, val_2, delta = (row[f'{construct}_t1'],
+                               row[f'{construct}_t2'],
+                               row[f'delta_{construct}'])
+        save_name = (
+            f'{s_i}_{construct}_{val_1}_{val_2}'
+            f'_delta_{delta}_index_{i}')
+        save_path = f'{path}/{save_name}'
+        text_1 = ' '.join(row['words_t1'].split())
+        text_2 = ' '.join(row['words_t2'].split())
+        construct_text = ('Satisfaction with life' if construct == 'swls'
+                          else 'Harmony in life')
+        server_pic_url = f'"https://oscarkjell.se/img/collage/{save_name}.png"'
+        collage_path_list += [server_pic_url]
+        sn_1 = save_questionaire_wc(text_1, f'{save_path}_t1', 10, color)
+        sn_2 = save_questionaire_wc(text_2, f'{save_path}_t2', 10, color)
+        collage = make_t1_t2_collage(sn_1, sn_2, collage_color)
+        collage_name = f'{save_name}.png'
+        collage.save(f'{path}/collage/{collage_name}')
+        save_Q_group(
+            save_path=f"{path}/q_groups/{save_name}.lsg",
+            server_image_path=server_pic_url,
+            construct_text=construct_text,
+            survey_id="282838",
+            group_name=save_name,
+            group_id=1,
+            Q_id=1
+        )
+        s_i += 1
+
+    survey_id = str(random.randint(100000, 999999))
+    save_survey(
+        collage_path_list=collage_path_list,
+        survey_id=survey_id,
+        save_path=f"{path}/survey_id_{survey_id}_{n}_questions.lss"
+        )
+
+    for val in [f'delta_{construct}', f'{construct}_t1']:
+        fig = go.Figure()
+        fig.add_trace(go.Histogram(x=samp[val],
+                                   name=f'Sample {val} score',
+                                   nbinsx=20))
+        fig.update_layout(bargap=.2,
+                          bargroupgap=.1,
+                          title_text=f'Sample {val} score',
+                          xaxis_title_text='Value',
+                          yaxis_title_text='Count')
+        fig.update_traces(opacity=.50)
+        fig.write_html(f'{path}/{construct}_{n}_sample_{val}.html')
+
+
+def save_questionaire_wc(text, name, max_words=10, color='black'):
+    """Saves a wordcloud made from text  in the graphs folder
+    with specified name, the wordcloud visualizes the top max_words
+    by order of frequency
+
+    Args:
+        text (str): string of words separated by spaces
+        name (str): string of the file name you want
+        max_words (int, optional): How many words you want in the wordcloud.
+                                   Defaults to 10.
+    """
+    wordcloud = WordCloud(
+        max_words=max_words,
+        margin=5,
+        background_color=color,
+        relative_scaling=0,
+        min_font_size=30,
+        max_font_size=30,
+        prefer_horizontal=1,
+        color_func=lambda *args, **kwargs: "white"
+        ).generate(text)
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    save_name = f'{name}.png'
+    plt.savefig(save_name, bbox_inches='tight')
+    return save_name
+
+
+def make_t1_t2_collage(pic1, pic2, color=True):
+    wc_w, arrow_w = 515, 100
+    wc_h, arrow_h = 268, int(arrow_w/2)
+    collage = Image.new(
+        mode="RGBA",
+        size=(2*wc_w + arrow_w, wc_h),
+        color='white')
+    t1, t2 = Image.open(pic1), Image.open(pic2)
+    arrow = Image.open('_graphs/rightarrow.png')
+    arrow = arrow.resize((arrow_w, arrow_h))
+    collage.paste(t1, (0, 0))
+    collage.paste(t2, (wc_w + arrow_w, 0))
+    collage.paste(arrow, (wc_w, int(wc_h/2) - int(arrow_h/2)))
+    if not color:
+        collage = collage.convert('L')
+    return collage
+
+
+def get_group_answer(qid, aid):
+    group_answers = f"""
+<row>
+<aid><![CDATA[{aid['q1'][0]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO01]]></code>
+<sortorder><![CDATA[0]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][0]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO02]]></code>
+<sortorder><![CDATA[0]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q3'][0]}]]></aid>
+<qid><![CDATA[{qid[2]}]]></qid>
+<code><![CDATA[AO01]]></code>
+<sortorder><![CDATA[0]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q3'][1]}]]></aid>
+<qid><![CDATA[{qid[2]}]]></qid>
+<code><![CDATA[AO02]]></code>
+<sortorder><![CDATA[1]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][1]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO02]]></code>
+<sortorder><![CDATA[1]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][1]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO03]]></code>
+<sortorder><![CDATA[1]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q3'][2]}]]></aid>
+<qid><![CDATA[{qid[2]}]]></qid>
+<code><![CDATA[AO03]]></code>
+<sortorder><![CDATA[2]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][2]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO03]]></code>
+<sortorder><![CDATA[2]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][2]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO04]]></code>
+<sortorder><![CDATA[2]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][3]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO04]]></code>
+<sortorder><![CDATA[3]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][3]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO05]]></code>
+<sortorder><![CDATA[3]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][4]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO05]]></code>
+<sortorder><![CDATA[4]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][4]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO06]]></code>
+<sortorder><![CDATA[4]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][5]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO06]]></code>
+<sortorder><![CDATA[5]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][5]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO07]]></code>
+<sortorder><![CDATA[5]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][6]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO07]]></code>
+<sortorder><![CDATA[6]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][6]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO08]]></code>
+<sortorder><![CDATA[6]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][7]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO08]]></code>
+<sortorder><![CDATA[7]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][7]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO09]]></code>
+<sortorder><![CDATA[7]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][8]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO09]]></code>
+<sortorder><![CDATA[8]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][8]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO10]]></code>
+<sortorder><![CDATA[8]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][9]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO10]]></code>
+<sortorder><![CDATA[9]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][9]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO11]]></code>
+<sortorder><![CDATA[9]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q1'][10]}]]></aid>
+<qid><![CDATA[{qid[0]}]]></qid>
+<code><![CDATA[AO11]]></code>
+<sortorder><![CDATA[10]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+<row>
+<aid><![CDATA[{aid['q2'][10]}]]></aid>
+<qid><![CDATA[{qid[1]}]]></qid>
+<code><![CDATA[AO12]]></code>
+<sortorder><![CDATA[10]]></sortorder>
+<assessment_value><![CDATA[0]]></assessment_value>
+<scale_id><![CDATA[0]]></scale_id>
+</row>
+    """
+    return group_answers
+
+
+def get_group_answer_l10ns(aid):
+    group_answer_l10ns = f"""
+<row>
+<id><![CDATA[36907]]></id>
+<aid><![CDATA[{aid['q3'][0]}]]></aid>
+<answer><![CDATA[Positive]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36916]]></id>
+<aid><![CDATA[{aid['q2'][0]}]]></aid>
+<answer><![CDATA[0]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36897]]></id>
+<aid><![CDATA[{aid['q1'][0]}]]></aid>
+<answer><![CDATA[0]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36905]]></id>
+<aid><![CDATA[{aid['q3'][1]}]]></aid>
+<answer><![CDATA[Neutral]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36915]]></id>
+<aid><![CDATA[{aid['q2'][1]}]]></aid>
+<answer><![CDATA[1]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36898]]></id>
+<aid><![CDATA[{aid['q1'][1]}]]></aid>
+<answer><![CDATA[1]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36894]]></id>
+<aid><![CDATA[{aid['q3'][2]}]]></aid>
+<answer><![CDATA[Negative]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36914]]></id>
+<aid><![CDATA[{aid['q2'][2]}]]></aid>
+<answer><![CDATA[2]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36899]]></id>
+<aid><![CDATA[{aid['q1'][2]}]]></aid>
+<answer><![CDATA[2]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36913]]></id>
+<aid><![CDATA[{aid['q2'][3]}]]></aid>
+<answer><![CDATA[3]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36900]]></id>
+<aid><![CDATA[{aid['q1'][3]}]]></aid>
+<answer><![CDATA[3]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36912]]></id>
+<aid><![CDATA[{aid['q2'][4]}]]></aid>
+<answer><![CDATA[4]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36901]]></id>
+<aid><![CDATA[{aid['q1'][4]}]]></aid>
+<answer><![CDATA[4]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36910]]></id>
+<aid><![CDATA[{aid['q2'][5]}]]></aid>
+<answer><![CDATA[5]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36902]]></id>
+<aid><![CDATA[{aid['q1'][5]}]]></aid>
+<answer><![CDATA[5]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36893]]></id>
+<aid><![CDATA[{aid['q2'][6]}]]></aid>
+<answer><![CDATA[6]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36903]]></id>
+<aid><![CDATA[{aid['q1'][6]}]]></aid>
+<answer><![CDATA[6]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36892]]></id>
+<aid><![CDATA[{aid['q2'][7]}]]></aid>
+<answer><![CDATA[7]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36906]]></id>
+<aid><![CDATA[{aid['q1'][7]}]]></aid>
+<answer><![CDATA[7]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36895]]></id>
+<aid><![CDATA[{aid['q2'][8]}]]></aid>
+<answer><![CDATA[8]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36904]]></id>
+<aid><![CDATA[{aid['q1'][8]}]]></aid>
+<answer><![CDATA[8]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36896]]></id>
+<aid><![CDATA[{aid['q2'][9]}]]></aid>
+<answer><![CDATA[9]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36909]]></id>
+<aid><![CDATA[{aid['q1'][9]}]]></aid>
+<answer><![CDATA[9]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36908]]></id>
+<aid><![CDATA[{aid['q1'][10]}]]></aid>
+<answer><![CDATA[10]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[36911]]></id>
+<aid><![CDATA[{aid['q2'][10]}]]></aid>
+<answer><![CDATA[10]]></answer>
+<language><![CDATA[en]]></language>
+</row>
+   """
+    return group_answer_l10ns
+
+
+def get_group(group_id, survey_id, index):
+    group = f"""
+<row>
+<gid><![CDATA[{group_id}]]></gid>
+<sid><![CDATA[{survey_id}]]></sid>
+<group_order><![CDATA[{index}]]></group_order>
+<randomization_group/>
+<grelevance/>
+</row>
+    """
+    return group
+
+
+def get_group_l10ns(group_id: str, survey_id: str, group_name: str, index):
+    group_l10ns = f"""
+<row>
+<id><![CDATA[1631]]></id>
+<gid><![CDATA[{group_id}]]></gid>
+<group_name><![CDATA[{group_name}]]></group_name>
+<description/>
+<language><![CDATA[en]]></language>
+<sid><![CDATA[{survey_id}]]></sid>
+<group_order><![CDATA[{index}]]></group_order>
+<randomization_group/>
+<grelevance/>
+</row>
+    """
+    return group_l10ns
+
+
+def get_group_questions(group_id, survey_id, qid):
+    group_questions = f"""
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<parent_qid><![CDATA[0]]></parent_qid>
+<sid><![CDATA[{survey_id}]]></sid>
+<gid><![CDATA[{group_id}]]></gid>
+<type><![CDATA[L]]></type>
+<title><![CDATA[G01Q01]]></title>
+<other><![CDATA[N]]></other>
+<mandatory><![CDATA[Y]]></mandatory>
+<encrypted><![CDATA[N]]></encrypted>
+<question_order><![CDATA[1]]></question_order>
+<scale_id><![CDATA[0]]></scale_id>
+<same_default><![CDATA[0]]></same_default>
+<relevance><![CDATA[1]]></relevance>
+<modulename/>
+<question_theme_name><![CDATA[bootstrap_buttons]]></question_theme_name>
+<same_script><![CDATA[0]]></same_script>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<parent_qid><![CDATA[0]]></parent_qid>
+<sid><![CDATA[{survey_id}]]></sid>
+<gid><![CDATA[{group_id}]]></gid>
+<type><![CDATA[L]]></type>
+<title><![CDATA[G01Q02]]></title>
+<other><![CDATA[N]]></other>
+<mandatory><![CDATA[Y]]></mandatory>
+<encrypted><![CDATA[N]]></encrypted>
+<question_order><![CDATA[2]]></question_order>
+<scale_id><![CDATA[0]]></scale_id>
+<same_default><![CDATA[0]]></same_default>
+<relevance><![CDATA[1]]></relevance>
+<modulename/>
+<question_theme_name><![CDATA[bootstrap_buttons]]></question_theme_name>
+<same_script><![CDATA[0]]></same_script>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<parent_qid><![CDATA[0]]></parent_qid>
+<sid><![CDATA[{survey_id}]]></sid>
+<gid><![CDATA[{group_id}]]></gid>
+<type><![CDATA[L]]></type>
+<title><![CDATA[G01Q30]]></title>
+<other><![CDATA[N]]></other>
+<mandatory><![CDATA[Y]]></mandatory>
+<encrypted><![CDATA[N]]></encrypted>
+<question_order><![CDATA[3]]></question_order>
+<scale_id><![CDATA[0]]></scale_id>
+<same_default><![CDATA[0]]></same_default>
+<relevance><![CDATA[1]]></relevance>
+<modulename/>
+<question_theme_name><![CDATA[bootstrap_buttons]]></question_theme_name>
+<same_script><![CDATA[0]]></same_script>
+</row>
+    """
+    return group_questions
+
+
+def get_group_question_l10ns(collage_path, qid):
+    question_l10ns = f"""
+<row>
+<id><![CDATA[42986]]></id>
+<qid><![CDATA[{qid[2]}]]></qid>
+<question><![CDATA[<p>
+<font size="+3">A person was asked to describe their <strong> Harmony in life
+ </strong>with ten words at two instances, with some time in between the two.
+</br>
+The words used by one person is shown in the pictures below, where the left
+ picture shows the words from the first query and the right image from the
+ second query.</font></p>
+</br>
+<img src={collage_path} alt="">
+</br>
+</br>
+<p>
+<strong>
+<font size="+2">
+Please rate if this change was  <i><font size="+3">positive, neutral</font></i>
+ or <i><font size="+3">negative </font></i>.
+</font>
+</strong>
+</br>
+</p>
+]]></question>
+<help/>
+<script/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[42987]]></id>
+<qid><![CDATA[{qid[0]}]]></qid>
+<question><![CDATA[<p>
+<font size="+2">
+<strong>
+Please rate how <i><font size="+3">Noticeable</font></i> the change is from
+ the first to the second query.
+</br>
+(From left picture to right)
+</strong>
+</font>
+</br>
+</p>
+]]></question>
+<help/>
+<script/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<id><![CDATA[42988]]></id>
+<qid><![CDATA[{qid[1]}]]></qid>
+<question><![CDATA[<p>
+<font size="+2">
+<strong>
+Please rate how <i><font size="+3">Meaningful</font></i> you feel the change
+ is from the first to the second query.
+</br>
+(From left picture to right)
+</strong>
+</font>
+</br>
+</p>]]></question>
+<help/>
+<script/>
+<language><![CDATA[en]]></language>
+</row>
+    """
+    return question_l10ns
+
+
+def get_question_attributes(qid: list):
+    question_attributes = f"""
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[alphasort]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[array_filter]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[array_filter_exclude]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[array_filter_style]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[button_size]]></attribute>
+<value><![CDATA[default]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[crop_or_resize]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[cssclass]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[em_validation_q]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[em_validation_q_tip]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[fix_height]]></attribute>
+<value><![CDATA[200]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[fix_width]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[hidden]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[hide_tip]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[horizontal_scroll]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[keep_aspect]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[other_comment_mandatory]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[other_numbers_only]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[other_position]]></attribute>
+<value><![CDATA[default]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[other_position_code]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[other_replace_text]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[page_break]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[printable_help]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[public_statistics]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[random_group]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[random_order]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[save_as_default]]></attribute>
+<value><![CDATA[N]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[scale_export]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[statistics_graphtype]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[statistics_showgraph]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_action]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_countdown_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_disable_next]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_disable_prev]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_message_delay]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_message_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_timer_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_display_time]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_display_time]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[2]}]]></qid>
+<attribute><![CDATA[time_limit_warning_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[alphasort]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[array_filter]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[array_filter_exclude]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[array_filter_style]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[button_size]]></attribute>
+<value><![CDATA[default]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[crop_or_resize]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[cssclass]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[em_validation_q]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[em_validation_q_tip]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[fix_height]]></attribute>
+<value><![CDATA[200]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[fix_width]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[hidden]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[hide_tip]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[horizontal_scroll]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[keep_aspect]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[other_comment_mandatory]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[other_numbers_only]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[other_position]]></attribute>
+<value><![CDATA[default]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[other_position_code]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[other_replace_text]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[page_break]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[printable_help]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[public_statistics]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[random_group]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[random_order]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[save_as_default]]></attribute>
+<value><![CDATA[N]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[scale_export]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[statistics_graphtype]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[statistics_showgraph]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_action]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_countdown_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_disable_next]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_disable_prev]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_message_delay]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_message_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_timer_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_display_time]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_display_time]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[0]}]]></qid>
+<attribute><![CDATA[time_limit_warning_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[alphasort]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[array_filter]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[array_filter_exclude]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[array_filter_style]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[button_size]]></attribute>
+<value><![CDATA[default]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[crop_or_resize]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[cssclass]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[em_validation_q]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[em_validation_q_tip]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[fix_height]]></attribute>
+<value><![CDATA[200]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[fix_width]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[hidden]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[hide_tip]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[horizontal_scroll]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[keep_aspect]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[other_comment_mandatory]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[other_numbers_only]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[other_position]]></attribute>
+<value><![CDATA[default]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[other_position_code]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[other_replace_text]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[page_break]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[printable_help]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[public_statistics]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[random_group]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[random_order]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[save_as_default]]></attribute>
+<value><![CDATA[N]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[scale_export]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[statistics_graphtype]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[statistics_showgraph]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_action]]></attribute>
+<value><![CDATA[1]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_countdown_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_disable_next]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_disable_prev]]></attribute>
+<value><![CDATA[0]]></value>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_message_delay]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_message_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_timer_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_display_time]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_2_style]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_display_time]]></attribute>
+<value/>
+<language/>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_message]]></attribute>
+<value/>
+<language><![CDATA[en]]></language>
+</row>
+<row>
+<qid><![CDATA[{qid[1]}]]></qid>
+<attribute><![CDATA[time_limit_warning_style]]></attribute>
+<value/>
+<language/>
+</row>
+    """
+    return question_attributes
+
+
+def get_surveys(survey_id):
+    surveys = f"""
+<surveys>
+<fields>
+<fieldname>sid</fieldname>
+<fieldname>gsid</fieldname>
+<fieldname>admin</fieldname>
+<fieldname>expires</fieldname>
+<fieldname>startdate</fieldname>
+<fieldname>adminemail</fieldname>
+<fieldname>anonymized</fieldname>
+<fieldname>faxto</fieldname>
+<fieldname>format</fieldname>
+<fieldname>savetimings</fieldname>
+<fieldname>template</fieldname>
+<fieldname>language</fieldname>
+<fieldname>additional_languages</fieldname>
+<fieldname>datestamp</fieldname>
+<fieldname>usecookie</fieldname>
+<fieldname>allowregister</fieldname>
+<fieldname>allowsave</fieldname>
+<fieldname>autonumber_start</fieldname>
+<fieldname>autoredirect</fieldname>
+<fieldname>allowprev</fieldname>
+<fieldname>printanswers</fieldname>
+<fieldname>ipaddr</fieldname>
+<fieldname>ipanonymize</fieldname>
+<fieldname>refurl</fieldname>
+<fieldname>showsurveypolicynotice</fieldname>
+<fieldname>publicstatistics</fieldname>
+<fieldname>publicgraphs</fieldname>
+<fieldname>listpublic</fieldname>
+<fieldname>htmlemail</fieldname>
+<fieldname>sendconfirmation</fieldname>
+<fieldname>tokenanswerspersistence</fieldname>
+<fieldname>assessments</fieldname>
+<fieldname>usecaptcha</fieldname>
+<fieldname>usetokens</fieldname>
+<fieldname>bounce_email</fieldname>
+<fieldname>attributedescriptions</fieldname>
+<fieldname>emailresponseto</fieldname>
+<fieldname>emailnotificationto</fieldname>
+<fieldname>tokenlength</fieldname>
+<fieldname>showxquestions</fieldname>
+<fieldname>showgroupinfo</fieldname>
+<fieldname>shownoanswer</fieldname>
+<fieldname>showqnumcode</fieldname>
+<fieldname>bouncetime</fieldname>
+<fieldname>bounceprocessing</fieldname>
+<fieldname>bounceaccounttype</fieldname>
+<fieldname>bounceaccounthost</fieldname>
+<fieldname>bounceaccountpass</fieldname>
+<fieldname>bounceaccountencryption</fieldname>
+<fieldname>bounceaccountuser</fieldname>
+<fieldname>showwelcome</fieldname>
+<fieldname>showprogress</fieldname>
+<fieldname>questionindex</fieldname>
+<fieldname>navigationdelay</fieldname>
+<fieldname>nokeyboard</fieldname>
+<fieldname>alloweditaftercompletion</fieldname>
+<fieldname>googleanalyticsstyle</fieldname>
+<fieldname>googleanalyticsapikey</fieldname>
+<fieldname>tokenencryptionoptions</fieldname>
+</fields>
+<rows>
+<row>
+<sid><![CDATA[{survey_id}]]></sid>
+<gsid><![CDATA[1]]></gsid>
+<admin><![CDATA[Marcel]]></admin>
+<adminemail><![CDATA[oscar_kjell@hotmail.com]]></adminemail>
+<anonymized><![CDATA[N]]></anonymized>
+<faxto/>
+<format><![CDATA[G]]></format>
+<savetimings><![CDATA[I]]></savetimings>
+<template><![CDATA[bootswatch]]></template>
+<language><![CDATA[en]]></language>
+<additional_languages/>
+<datestamp><![CDATA[I]]></datestamp>
+<usecookie><![CDATA[I]]></usecookie>
+<allowregister><![CDATA[I]]></allowregister>
+<allowsave><![CDATA[I]]></allowsave>
+<autonumber_start><![CDATA[0]]></autonumber_start>
+<autoredirect><![CDATA[I]]></autoredirect>
+<allowprev><![CDATA[I]]></allowprev>
+<printanswers><![CDATA[I]]></printanswers>
+<ipaddr><![CDATA[I]]></ipaddr>
+<ipanonymize><![CDATA[I]]></ipanonymize>
+<refurl><![CDATA[I]]></refurl>
+<showsurveypolicynotice><![CDATA[0]]></showsurveypolicynotice>
+<publicstatistics><![CDATA[I]]></publicstatistics>
+<publicgraphs><![CDATA[I]]></publicgraphs>
+<listpublic><![CDATA[I]]></listpublic>
+<htmlemail><![CDATA[I]]></htmlemail>
+<sendconfirmation><![CDATA[I]]></sendconfirmation>
+<tokenanswerspersistence><![CDATA[I]]></tokenanswerspersistence>
+<assessments><![CDATA[I]]></assessments>
+<usecaptcha><![CDATA[E]]></usecaptcha>
+<usetokens><![CDATA[N]]></usetokens>
+<bounce_email><![CDATA[inherit]]></bounce_email>
+<emailresponseto><![CDATA[inherit]]></emailresponseto>
+<emailnotificationto><![CDATA[inherit]]></emailnotificationto>
+<tokenlength><![CDATA[-1]]></tokenlength>
+<showxquestions><![CDATA[I]]></showxquestions>
+<showgroupinfo><![CDATA[I]]></showgroupinfo>
+<shownoanswer><![CDATA[I]]></shownoanswer>
+<showqnumcode><![CDATA[I]]></showqnumcode>
+<bounceprocessing><![CDATA[N]]></bounceprocessing>
+<showwelcome><![CDATA[I]]></showwelcome>
+<showprogress><![CDATA[I]]></showprogress>
+<questionindex><![CDATA[-1]]></questionindex>
+<navigationdelay><![CDATA[-1]]></navigationdelay>
+<nokeyboard><![CDATA[I]]></nokeyboard>
+<alloweditaftercompletion><![CDATA[I]]></alloweditaftercompletion>
+<tokenencryptionoptions/>
+</row>
+</rows>
+</surveys>
+    """
+    return surveys
+
+
+def get_survey_language_settings(survey_id):
+    survey_language_settings_a = f"""
+<surveys_languagesettings>
+<fields>
+<fieldname>surveyls_survey_id</fieldname>
+<fieldname>surveyls_language</fieldname>
+<fieldname>surveyls_title</fieldname>
+<fieldname>surveyls_description</fieldname>
+<fieldname>surveyls_welcometext</fieldname>
+<fieldname>surveyls_endtext</fieldname>
+<fieldname>surveyls_policy_notice</fieldname>
+<fieldname>surveyls_policy_error</fieldname>
+<fieldname>surveyls_policy_notice_label</fieldname>
+<fieldname>surveyls_url</fieldname>
+<fieldname>surveyls_urldescription</fieldname>
+<fieldname>surveyls_email_invite_subj</fieldname>
+<fieldname>surveyls_email_invite</fieldname>
+<fieldname>surveyls_email_remind_subj</fieldname>
+<fieldname>surveyls_email_remind</fieldname>
+<fieldname>surveyls_email_register_subj</fieldname>
+<fieldname>surveyls_email_register</fieldname>
+<fieldname>surveyls_email_confirm_subj</fieldname>
+<fieldname>surveyls_email_confirm</fieldname>
+<fieldname>surveyls_dateformat</fieldname>
+<fieldname>surveyls_attributecaptions</fieldname>
+<fieldname>email_admin_notification_subj</fieldname>
+<fieldname>email_admin_notification</fieldname>
+<fieldname>email_admin_responses_subj</fieldname>
+<fieldname>email_admin_responses</fieldname>
+<fieldname>surveyls_numberformat</fieldname>
+<fieldname>attachments</fieldname>
+</fields>
+<rows>
+<row>
+<surveyls_survey_id><![CDATA[{survey_id}]]></surveyls_survey_id>
+    """
+    survey_language_settings_b = """
+<surveyls_language><![CDATA[en]]></surveyls_language>
+<surveyls_title><![CDATA[Meaningful change in satisfaction with life]]>
+</surveyls_title>
+<surveyls_description/>
+<surveyls_welcometext/>
+<surveyls_endtext/>
+<surveyls_policy_notice/>
+<surveyls_policy_notice_label/>
+<surveyls_url/>
+<surveyls_urldescription/>
+<surveyls_email_invite_subj><![CDATA[Invitation to participate in a survey]]>
+</surveyls_email_invite_subj>
+<surveyls_email_invite><![CDATA[Dear {FIRSTNAME},
+
+You have been invited to participate in a survey.
+
+The survey is titled:
+"{SURVEYNAME}"
+
+"{SURVEYDESCRIPTION}"
+
+To participate, please click on the link below.
+
+Sincerely,
+
+{ADMINNAME} ({ADMINEMAIL})
+
+----------------------------------------------
+Click here to do the survey:
+{SURVEYURL}
+
+If you do not want to participate in this survey and don't want to receive
+ any more invitations please click the following link:
+{OPTOUTURL}
+
+If you are blacklisted but want to participate in this survey and want to
+ receive invitations please click the following link:
+{OPTINURL}]]></surveyls_email_invite>
+<surveyls_email_remind_subj><![CDATA[Reminder to participate in a survey]]>
+</surveyls_email_remind_subj>
+<surveyls_email_remind><![CDATA[Dear {FIRSTNAME},
+
+Recently we invited you to participate in a survey.
+
+We note that you have not yet completed the survey, and wish to remind you
+ that the survey is still available should you wish to take part.
+
+The survey is titled:
+"{SURVEYNAME}"
+
+"{SURVEYDESCRIPTION}"
+
+To participate, please click on the link below.
+
+Sincerely,
+
+{ADMINNAME} ({ADMINEMAIL})
+
+----------------------------------------------
+Click here to do the survey:
+{SURVEYURL}
+
+If you do not want to participate in this survey and don't want to receive
+ any more invitations please click the following link:
+{OPTOUTURL}]]></surveyls_email_remind>
+<surveyls_email_register_subj><![CDATA[Survey registration confirmation]]>
+</surveyls_email_register_subj>
+<surveyls_email_register><![CDATA[Dear {FIRSTNAME},
+
+You, or someone using your email address, have registered to participate
+ in an online survey titled {SURVEYNAME}.
+
+To complete this survey, click on the following URL:
+
+{SURVEYURL}
+
+If you have any questions about this survey, or if you did not register
+ to participate and believe this email is in error,
+ please contact {ADMINNAME} at {ADMINEMAIL}.]]></surveyls_email_register>
+<surveyls_email_confirm_subj><![CDATA[Confirmation of your participation
+ in our survey]]></surveyls_email_confirm_subj>
+<surveyls_email_confirm><![CDATA[Dear {FIRSTNAME},
+
+This email is to confirm that you have completed the survey titled
+ {SURVEYNAME} and your response has been saved. Thank you for participating.
+
+If you have any further questions about this email, please contact
+ {ADMINNAME} on {ADMINEMAIL}.
+
+Sincerely,
+
+{ADMINNAME}]]></surveyls_email_confirm>
+<surveyls_dateformat><![CDATA[9]]></surveyls_dateformat>
+<email_admin_notification_subj><![CDATA[Response submission
+ for survey {SURVEYNAME}]]></email_admin_notification_subj>
+<email_admin_notification><![CDATA[Hello,
+
+A new response was submitted for your survey '{SURVEYNAME}'.
+
+Click the following link to see the individual response:
+{VIEWRESPONSEURL}
+
+Click the following link to edit the individual response:
+{EDITRESPONSEURL}
+
+View statistics by clicking here:
+{STATISTICSURL}]]></email_admin_notification>
+<email_admin_responses_subj><![CDATA[Response submission for survey
+ {SURVEYNAME} with results]]></email_admin_responses_subj>
+<email_admin_responses><![CDATA[Hello,
+
+A new response was submitted for your survey '{SURVEYNAME}'.
+
+Click the following link to see the individual response:
+{VIEWRESPONSEURL}
+
+Click the following link to edit the individual response:
+{EDITRESPONSEURL}
+
+View statistics by clicking here:
+{STATISTICSURL}
+
+
+The following answers were given by the participant:
+{ANSWERTABLE}]]></email_admin_responses>
+<surveyls_numberformat><![CDATA[0]]></surveyls_numberformat>
+</row>
+</rows>
+</surveys_languagesettings>
+    """
+    return survey_language_settings_a + survey_language_settings_b
+
+
+def get_themes(survey_id):
+    themes = f"""
+<themes>
+<theme>
+<sid>{survey_id}</sid>
+<template_name>bootswatch</template_name>
+<config>
+    <options>inherit</options>
+</config>
+</theme>
+<theme>
+<sid>{survey_id}</sid>
+<template_name>fruity</template_name>
+<config>
+    <options>inherit</options>
+</config>
+</theme>
+</themes>
+    """
+    return themes
+
+
+def get_themes_inherited(survey_id):
+    themes_inherited = f"""
+<themes_inherited>
+<theme>
+<sid>{survey_id}</sid>
+<template_name>bootswatch</template_name>
+<config>
+    <options>
+    <ajaxmode>off</ajaxmode>
+    <brandlogo>on</brandlogo>
+    <container>on</container>
+    <brandlogofile>image::theme::files/logo.png</brandlogofile>
+    <showpopups>1</showpopups>
+    <showclearall>off</showclearall>
+    <questionhelptextposition>top</questionhelptextposition>
+    </options>
+</config>
+</theme>
+<theme>
+<sid>{survey_id}</sid>
+<template_name>fruity</template_name>
+<config>
+    <options>
+    <ajaxmode>off</ajaxmode>
+    <brandlogo>on</brandlogo>
+    <container>on</container>
+    <brandlogofile>image::theme::files/logo.png</brandlogofile>
+    <showpopups>1</showpopups>
+    <showclearall>off</showclearall>
+    <questionhelptextposition>top</questionhelptextposition>
+    </options>
+</config>
+</theme>
+</themes_inherited>
+    """
+    return themes_inherited
+
+
+def make_survey(
+        collage_path_list,
+        survey_id,
+        ):
+    all_group_answers = ''
+    all_group_answers_l10ns = ''
+    all_groups = ''
+    all_group_l10ns = ''
+    all_group_questions = ''
+    all_group_questions_l10ns = ''
+    all_question_attributes = ''
+    n = len(collage_path_list)
+    qids = [int(f'{rand_n}00')
+            for rand_n
+            in random.sample(range(10**2, 10**3), 3*n)]
+    gids = random.sample(range(10**3, 10**4), n)
+    for i, collage_path in enumerate(collage_path_list):
+        group_id = gids[i]
+        qid = [qids[i*3], qids[i*3+1], qids[i*3+2]]
+        aid = {
+            'q1': [str(int(qid[0])+(j))[:5] for j in range(1, 12)],
+            'q2': [str(int(qid[1])+(j))[:5] for j in range(1, 12)],
+            'q3': [str(int(qid[2])+(j))[:5] for j in range(1, 12)],
+        }
+
+        all_group_answers = ''.join([
+            all_group_answers,
+            get_group_answer(
+                qid=qid,
+                aid=aid)])
+        all_group_answers_l10ns = ''.join([
+            all_group_answers_l10ns,
+            get_group_answer_l10ns(
+                aid=aid)])
+        all_groups = ''.join([
+            all_groups,
+            get_group(
+                group_id=group_id,
+                survey_id=survey_id,
+                index=i)])
+        all_group_l10ns = ''.join([
+            all_group_l10ns,
+            get_group_l10ns(
+                group_id=group_id,
+                survey_id=survey_id,
+                group_name=f'Harmony questions {gids[i]}',
+                index=i)])
+        all_group_questions = ''.join([
+            all_group_questions,
+            get_group_questions(
+                group_id=group_id,
+                survey_id=survey_id,
+                qid=qid)])
+        all_group_questions_l10ns = ''.join([
+            all_group_questions_l10ns,
+            get_group_question_l10ns(
+                collage_path=collage_path,
+                qid=qid)])
+        all_question_attributes = ''.join([
+            all_question_attributes,
+            get_question_attributes(
+                qid=qid)])
+
+    answers = f"""
+<answers>
+<fields>
+<fieldname>aid</fieldname>
+<fieldname>qid</fieldname>
+<fieldname>code</fieldname>
+<fieldname>sortorder</fieldname>
+<fieldname>assessment_value</fieldname>
+<fieldname>scale_id</fieldname>
+</fields>
+<rows>
+{all_group_answers}
+</rows>
+</answers>
+    """
+
+    answer_l10ns = f"""
+<answer_l10ns>
+<fields>
+<fieldname>id</fieldname>
+<fieldname>aid</fieldname>
+<fieldname>answer</fieldname>
+<fieldname>language</fieldname>
+</fields>
+<rows>
+{all_group_answers_l10ns}
+</rows>
+</answer_l10ns>
+    """
+
+    groups = f"""
+<groups>
+<fields>
+<fieldname>gid</fieldname>
+<fieldname>sid</fieldname>
+<fieldname>group_order</fieldname>
+<fieldname>randomization_group</fieldname>
+<fieldname>grelevance</fieldname>
+</fields>
+<rows>
+{all_groups}
+</rows>
+</groups>
+    """
+
+    group_l10ns = f"""
+<group_l10ns>
+<fields>
+<fieldname>id</fieldname>
+<fieldname>gid</fieldname>
+<fieldname>group_name</fieldname>
+<fieldname>description</fieldname>
+<fieldname>language</fieldname>
+<fieldname>sid</fieldname>
+<fieldname>group_order</fieldname>
+<fieldname>randomization_group</fieldname>
+<fieldname>grelevance</fieldname>
+</fields>
+<rows>
+{all_group_l10ns}
+</rows>
+</group_l10ns>
+    """
+
+    questions = f"""
+<questions>
+<fields>
+<fieldname>qid</fieldname>
+<fieldname>parent_qid</fieldname>
+<fieldname>sid</fieldname>
+<fieldname>gid</fieldname>
+<fieldname>type</fieldname>
+<fieldname>title</fieldname>
+<fieldname>preg</fieldname>
+<fieldname>other</fieldname>
+<fieldname>mandatory</fieldname>
+<fieldname>encrypted</fieldname>
+<fieldname>question_order</fieldname>
+<fieldname>scale_id</fieldname>
+<fieldname>same_default</fieldname>
+<fieldname>relevance</fieldname>
+<fieldname>modulename</fieldname>
+<fieldname>question_theme_name</fieldname>
+<fieldname>same_script</fieldname>
+</fields>
+<rows>
+{all_group_questions}
+</rows>
+</questions>
+    """
+
+    question_l10ns = f"""
+<question_l10ns>
+<fields>
+<fieldname>id</fieldname>
+<fieldname>qid</fieldname>
+<fieldname>question</fieldname>
+<fieldname>help</fieldname>
+<fieldname>script</fieldname>
+<fieldname>language</fieldname>
+</fields>
+<rows>
+{all_group_questions_l10ns}
+</rows>
+</question_l10ns>
+    """
+
+    question_attributes = f"""
+<question_attributes>
+<fields>
+<fieldname>qid</fieldname>
+<fieldname>attribute</fieldname>
+<fieldname>value</fieldname>
+<fieldname>language</fieldname>
+</fields>
+<rows>
+{all_question_attributes}
+</rows>
+</question_attributes>
+    """
+
+    surveys = get_surveys(survey_id=survey_id)
+    survey_language_settings = get_survey_language_settings(
+        survey_id=survey_id)
+    themes = get_themes(survey_id=survey_id)
+    themes_inherited = get_themes_inherited(survey_id=survey_id)
+    ans = f'{answers}{answer_l10ns}'
+    grp = f'{groups}{group_l10ns}'
+    quest = f'{questions}{question_l10ns}{question_attributes}'
+    survs = f'{surveys}{survey_language_settings}'
+    thems = f'{themes}{themes_inherited}'
+
+    document = f"""
+<?xml version="1.0" encoding="UTF-8"?>
+<document>
+<LimeSurveyDocType>Survey</LimeSurveyDocType>
+<DBVersion>491</DBVersion>
+<languages>
+<language>en</language>
+</languages>{ans}{grp}{quest}{survs}{thems}
+</document>
+    """
+    survey = '\n'.join([line for line in document.split('\n') if line.strip()])
+    return survey
+
+
+def save_survey(
+            collage_path_list,
+            survey_id,
+            save_path
+            ):
+    survey_txt = make_survey(
+            collage_path_list,
+            survey_id
+            )
+    with open(save_path, "w") as f:
+        f.write(survey_txt
+                )

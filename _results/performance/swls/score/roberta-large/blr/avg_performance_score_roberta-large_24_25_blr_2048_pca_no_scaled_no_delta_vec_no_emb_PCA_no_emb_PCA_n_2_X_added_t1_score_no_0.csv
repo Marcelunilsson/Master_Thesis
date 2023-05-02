@@ -1,0 +1,2 @@
+model,n_folds,mae,mse,rmse,r2,r,elapsed_time,n_samples,n_features,transformer,scale,X_pca,scaled_data
+blr,5,4.28458724904384,29.08723091211495,5.385352362744643,0.5063169492675894,0.7148443713280125,124.92554879188538,948,2048,roberta-large,swls,no,no

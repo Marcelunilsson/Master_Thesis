@@ -1,0 +1,2 @@
+model,n_folds,mae,mse,rmse,r2,r,elapsed_time,n_samples,n_features,transformer,scale,X_pca,scaled_data
+ridge,5,4.62393122482932,33.94376565885994,5.825089378108598,0.4215562321590953,0.662162787559317,56.52452731132507,948,1536,bert-base-uncased,swls,no,no

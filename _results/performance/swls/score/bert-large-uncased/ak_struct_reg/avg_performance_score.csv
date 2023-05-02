@@ -1,0 +1,2 @@
+model,n_folds,mae,mse,rmse,r2,r,elapsed_time,n_samples,n_features,transformer,scale,X_pca,scaled_data,run_nbr,layers,target,delta_vec,emb_PCA,emb_pca_n,X_added_t1_score
+ak_struct_reg,5,3.573399828605684,21.152658934316946,4.557003120659576,0.6420450758548679,0.8024708865012726,8056.211067438126,948,2048,bert-large-uncased,swls,no,no,0,24_25,score,no,no,2,no

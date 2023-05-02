@@ -1,0 +1,2 @@
+model,n_folds,mae,mse,rmse,r2,r,elapsed_time,n_samples,n_features,transformer,scale,X_pca,scaled_data,run_nbr,layers,target,delta_vec,emb_PCA,emb_pca_n,X_added_t1_score
+ak_struct_reg,5,3.9392177079667356,25.507645783081593,5.045013099814096,0.5669823051402382,0.7539926106121981,5673.467613697052,948,1536,roberta-base,swls,no,no,0,12_13,score,no,no,2,no

@@ -1,0 +1,2 @@
+model,n_folds,mae,mse,rmse,r2,r,elapsed_time,n_samples,n_features,transformer,scale,X_pca,scaled_data,run_nbr,layers,target,delta_vec,emb_PCA,emb_pca_n,X_added_t1_score
+random_forest,5,5.081109558187938,39.334765068096694,6.265631006566808,0.33236278755358767,0.5909697993935417,464.16322445869446,948,1536,roberta-base,swls,no,no,0,12_13,score,no,no,2,no
